@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Calculator, Percent, Euro, RotateCcw, Save, Fuel, Zap, Droplets } from 'lucide-react';
+import VRChart from './components/VRChart';
 
 interface GridData {
   [key: string]: number; // key format: "duration_mileage"
@@ -93,6 +94,7 @@ function App() {
   const [referenceMileage, setReferenceMileage] = useState<number>(20000);
   const [displayMode, setDisplayMode] = useState<'percentage' | 'euro'>('euro');
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [showChart, setShowChart] = useState<boolean>(false);
 
   const getKey = useCallback((duration: number, mileage: number): string => {
     return `${duration}_${mileage}`;
@@ -347,8 +349,28 @@ function App() {
               <RotateCcw className="w-5 h-5" />
               Réinitialiser
             </button>
+            
+            <button
+              onClick={() => setShowChart(!showChart)}
+              className="flex items-center gap-2 px-6 py-3 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors"
+            >
+              <Calculator className="w-5 h-5" />
+              {showChart ? 'Masquer' : 'Afficher'} le graphique
+            </button>
           </div>
         </div>
+
+        {/* Chart */}
+        {showChart && (
+          <VRChart
+            selectedEnergy={selectedEnergy}
+            referenceMileage={referenceMileage}
+            referenceDuration={referenceDuration}
+            referenceValue={referenceValue}
+            calculateEuroValue={calculateEuroValue}
+            interpolatePercentage={interpolatePercentage}
+          />
+        )}
 
         {/* Grid */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
