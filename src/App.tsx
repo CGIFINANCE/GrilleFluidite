@@ -302,33 +302,6 @@ function App() {
             </div>
           </div>
 
-          {/* Configuration financement */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Prix financé (€) - optionnel</label>
-              <input
-                type="number"
-                value={financedPrice}
-                onChange={(e) => setFinancedPrice(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                placeholder="25000"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Taux d'intérêt annuel (%)</label>
-              <input
-                type="number"
-                step="0.1"
-                value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                placeholder="3.5"
-                min="0"
-                max="20"
-              />
-            </div>
-          </div>
-
           {/* Informations calculées */}
           {pivotValue > 0 && (
             <div className="space-y-3 mb-6">
@@ -391,16 +364,48 @@ function App() {
 
         {/* Chart */}
         {showChart && (
-          <VRChart
-            selectedEnergy={selectedEnergy}
-            referenceMileage={referenceMileage}
-            referenceDuration={referenceDuration}
-            referenceValue={referenceValue}
-            calculateEuroValue={calculateEuroValue}
-            interpolatePercentage={interpolatePercentage}
-            financedPrice={parseFloat(financedPrice) || 0}
-            interestRate={parseFloat(interestRate) || 0}
-          />
+          <div className="space-y-6">
+            {/* Configuration financement */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-lg font-bold text-slate-800 mb-4">Configuration du financement (optionnel)</h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700">Prix financé (€)</label>
+                  <input
+                    type="number"
+                    value={financedPrice}
+                    onChange={(e) => setFinancedPrice(e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                    placeholder="25000"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700">Taux d'intérêt annuel (%)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={interestRate}
+                    onChange={(e) => setInterestRate(e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                    placeholder="3.5"
+                    min="0"
+                    max="20"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <VRChart
+              selectedEnergy={selectedEnergy}
+              referenceMileage={referenceMileage}
+              referenceDuration={referenceDuration}
+              referenceValue={referenceValue}
+              calculateEuroValue={calculateEuroValue}
+              interpolatePercentage={interpolatePercentage}
+              financedPrice={parseFloat(financedPrice) || 0}
+              interestRate={parseFloat(interestRate) || 0}
+            />
+          </div>
         )}
 
         {/* Grid */}
