@@ -26,25 +26,18 @@ const VRChart: React.FC<VRChartProps> = ({
   const calculateCRD = (duration: number): number => {
     if (financedPrice <= 0 || referenceDuration <= 0) return 0;
     
-    const monthlyRate = interestRate / 100 / 12;
-    const totalMonths = referenceDuration;
+    const refValue = parseFloat(referenceValue) || 0;
+    if (refValue <= 0) return 0;
     
-    if (monthlyRate === 0) {
-      // Cas sans intérêt : amortissement linéaire simple
-      return financedPrice * (1 - duration / totalMonths);
+    // En LOA, le CRD va du prix financé à la VR de référence
+    // Interpolation linéaire entre le prix financé (à 0 mois) et la VR (à la durée de référence)
+    if (duration >= referenceDuration) {
+      return refValue; // À la fin du contrat, CRD = VR
     }
     
-    // Calcul de la mensualité constante
-    const monthlyPayment = financedPrice * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
-                          (Math.pow(1 + monthlyRate, totalMonths) - 1);
-    
-    // Capital restant dû après 'duration' mois
-    if (duration >= totalMonths) return 0;
-    
-    const remainingCapital = financedPrice * Math.pow(1 + monthlyRate, duration) - 
-                           monthlyPayment * (Math.pow(1 + monthlyRate, duration) - 1) / monthlyRate;
-    
-    return Math.max(0, remainingCapital);
+    // Interpolation linéaire : CRD = prix_financé - (prix_financé - VR) * (durée / durée_totale)
+    const amortizedAmount = (financedPrice - refValue) * (duration / referenceDuration);
+    return financedPrice - amortizedAmount;
   };
 
   // Générer les données pour la courbe (de 12 à 72 mois par pas de 3 mois pour plus de fluidité)
@@ -79,13 +72,13 @@ const VRChart: React.FC<VRChartProps> = ({
             <p className="text-blue-600">{`VR: ${vrData.value.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €`}</p>
           )}
           {crdData && financedPrice > 0 && (
-            <p className="text-red-600">{`CRD: ${crdData.value.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €`}</p>
+            <p className="text-red-600">{`CRD LOA: ${crdData.value.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €`}</p>
           )}
           <p className="text-slate-600">{`Pourcentage: ${data.percentage}%`}</p>
           <p className="text-slate-500 text-sm">{`Kilométrage: ${referenceMileage.toLocaleString()} km`}</p>
           {financedPrice > 0 && crdData && vrData && (
             <p className="text-purple-600 text-sm font-medium">
-              {`Écart: ${(vrData.value - crdData.value).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €`}
+              {`Écart VR-CRD: ${(vrData.value - crdData.value).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €`}
             </p>
           )}
         </div>
