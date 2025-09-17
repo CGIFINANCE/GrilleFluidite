@@ -169,7 +169,7 @@ const VRChart: React.FC<VRChartProps> = ({
         {financedPrice > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-4 h-1 bg-red-500 rounded border-dashed border border-red-500"></div>
-            <span className="text-slate-700">Courbe CRD</span>
+            <span className="text-slate-700">Courbe CRD LOA</span>
           </div>
         )}
         {refValue > 0 && (
@@ -179,7 +179,7 @@ const VRChart: React.FC<VRChartProps> = ({
           </div>
         )}
         <div className="text-slate-500">
-          Survolez les courbes pour voir les détails et l'écart VR-CRD
+          Survolez les courbes pour voir les détails et l'écart VR-CRD LOA
         </div>
       </div>
     </div>

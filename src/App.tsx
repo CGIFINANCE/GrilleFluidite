@@ -380,16 +380,12 @@ function App() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">Taux d'intérêt annuel (%)</label>
+                  <label className="text-sm font-semibold text-slate-700">Information LOA</label>
                   <input
-                    type="number"
-                    step="0.1"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                    placeholder="3.5"
-                    min="0"
-                    max="20"
+                    type="text"
+                    value="CRD va du prix financé à la VR"
+                    readOnly
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-slate-50 text-slate-600"
                   />
                 </div>
               </div>
