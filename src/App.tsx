@@ -95,6 +95,8 @@ function App() {
   const [displayMode, setDisplayMode] = useState<'percentage' | 'euro'>('euro');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [showChart, setShowChart] = useState<boolean>(false);
+  const [financedPrice, setFinancedPrice] = useState<string>('');
+  const [interestRate, setInterestRate] = useState<string>('3.5');
 
   const getKey = useCallback((duration: number, mileage: number): string => {
     return `${duration}_${mileage}`;
@@ -300,6 +302,33 @@ function App() {
             </div>
           </div>
 
+          {/* Configuration financement */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Prix financé (€) - optionnel</label>
+              <input
+                type="number"
+                value={financedPrice}
+                onChange={(e) => setFinancedPrice(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                placeholder="25000"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Taux d'intérêt annuel (%)</label>
+              <input
+                type="number"
+                step="0.1"
+                value={interestRate}
+                onChange={(e) => setInterestRate(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                placeholder="3.5"
+                min="0"
+                max="20"
+              />
+            </div>
+          </div>
+
           {/* Informations calculées */}
           {pivotValue > 0 && (
             <div className="space-y-3 mb-6">
@@ -369,6 +398,8 @@ function App() {
             referenceValue={referenceValue}
             calculateEuroValue={calculateEuroValue}
             interpolatePercentage={interpolatePercentage}
+            financedPrice={parseFloat(financedPrice) || 0}
+            interestRate={parseFloat(interestRate) || 0}
           />
         )}
 
