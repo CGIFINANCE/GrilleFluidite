@@ -380,14 +380,22 @@ function App() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">Information LOA</label>
+                  <label className="text-sm font-semibold text-slate-700">Taux d'intérêt annuel (%)</label>
                   <input
-                    type="text"
-                    value="CRD va du prix financé à la VR"
-                    readOnly
-                    className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-slate-50 text-slate-600"
+                    type="number"
+                    step="0.1"
+                    value={interestRate}
+                    onChange={(e) => setInterestRate(e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                    placeholder="3.5"
                   />
                 </div>
+              </div>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  <strong>Principe LOA :</strong> L'échéancier est calculé pour que le CRD final (à {referenceDuration} mois) soit égal à la VR ({referenceValue}€). 
+                  Le graphique affiche l'évolution à partir du 12ème mois.
+                </p>
               </div>
             </div>
 

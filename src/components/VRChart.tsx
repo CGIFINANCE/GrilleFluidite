@@ -22,25 +22,45 @@ const VRChart: React.FC<VRChartProps> = ({
   financedPrice,
   interestRate
 }) => {
-  // Calcul du CRD (Capital Restant Dû) avec amortissement linéaire du capital
+  // Calcul du CRD (Capital Restant Dû) avec échéancier de crédit LOA
   const calculateCRD = (duration: number): number => {
     if (financedPrice <= 0 || referenceDuration <= 0) return 0;
     
     const refValue = parseFloat(referenceValue) || 0;
     if (refValue <= 0) return 0;
     
-    // En LOA, le CRD va du prix financé à la VR de référence
-    // Interpolation linéaire entre le prix financé (à 0 mois) et la VR (à la durée de référence)
+    // En LOA, calcul de l'échéancier avec taux d'intérêt
+    // Le CRD final à la durée de référence doit être égal à la VR
+    const monthlyRate = interestRate / 100 / 12;
+    const totalMonths = referenceDuration;
+    
+    // Calcul de la mensualité pour que le CRD final = VR
+    // Formule : CRD_final = Capital_initial * (1 + taux)^n - Mensualité * ((1 + taux)^n - 1) / taux
+    // On résout pour Mensualité sachant que CRD_final = VR
+    let monthlyPayment;
+    if (monthlyRate === 0) {
+      // Cas sans intérêt
+      monthlyPayment = (financedPrice - refValue) / totalMonths;
+    } else {
+      const compound = Math.pow(1 + monthlyRate, totalMonths);
+      monthlyPayment = (financedPrice * compound - refValue) * monthlyRate / (compound - 1);
+    }
+    
+    // Calcul du CRD à la durée donnée
     if (duration >= referenceDuration) {
       return refValue; // À la fin du contrat, CRD = VR
     }
     
-    // Interpolation linéaire : CRD = prix_financé - (prix_financé - VR) * (durée / durée_totale)
-    const amortizedAmount = (financedPrice - refValue) * (duration / referenceDuration);
-    return financedPrice - amortizedAmount;
+    // Calcul du CRD selon l'échéancier d'amortissement
+    if (monthlyRate === 0) {
+      return financedPrice - monthlyPayment * duration;
+    } else {
+      const compound = Math.pow(1 + monthlyRate, duration);
+      return financedPrice * compound - monthlyPayment * (compound - 1) / monthlyRate;
+    }
   };
 
-  // Générer les données pour la courbe (de 12 à 72 mois par pas de 3 mois pour plus de fluidité)
+  // Générer les données pour la courbe (à partir de 12 mois jusqu'à 72 mois par pas de 3 mois)
   const chartData = [];
   for (let duration = 12; duration <= 72; duration += 3) {
     const euroValue = calculateEuroValue(duration, referenceMileage);
